@@ -18,4 +18,8 @@ export class DepartmentService {
     return this.http.post<Department>('http://localhost:8080/department/add-department', department);
   }
 
+  getDepartments(): Observable<Department[]> {
+    return this.http.get<Department[]>('http://localhost:8080/department/get-all');
+  }
+
 }
