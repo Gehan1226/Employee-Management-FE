@@ -12,12 +12,13 @@ export interface Role {
 })
 export class RoleService {
   
-  private apiUrl = 'http://localhost:8080/role/add-role'; 
-
   constructor(private http: HttpClient) {}
 
   addRole(role: Role): Observable<Role> {
-    return this.http.post<Role>(this.apiUrl, role);
+    return this.http.post<Role>('http://localhost:8080/role/add-role', role);
   }
 
+  getRoles(): Observable<Role[]> {
+    return this.http.get<Role[]>('http://localhost:8080/role/get-all');
+  }
 }
