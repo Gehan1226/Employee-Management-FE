@@ -1,30 +1,47 @@
 import { Component, OnInit } from '@angular/core';
 import { Role, RoleService } from '../../../services/role/role.service';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgForOf } from '@angular/common';
 import { Department, DepartmentService } from '../../../services/department/department.service';
+import { EmployeeService, Employee } from '../../../services/employee/employee.service';
 
 @Component({
   selector: 'app-add-employee',
   standalone: true,
-  imports: [FormsModule, NgForOf],
+  imports: [FormsModule, NgForOf, ReactiveFormsModule],
   templateUrl: './add-employee.component.html',
   styleUrl: './add-employee.component.css'
 })
-export class AddEmployeeComponent  implements OnInit {
+export class AddEmployeeComponent implements OnInit {
 
-  roles: Role[] = []; 
-  selectedRole: Role | null = null; 
+  public employeeForm: FormGroup;
 
-  departments: Department[] = []; 
-  selectedDepartment: Department | null = null; 
+  roles: Role[] = [];
+  selectedRole: Role | null = null;
 
-  constructor(private roleService: RoleService, private departmentService: DepartmentService) {}
+  departments: Department[] = [];
+
+  constructor(
+    private roleService: RoleService, 
+    private departmentService: DepartmentService, 
+    private emplyeeService: EmployeeService
+  ){
+    this.employeeForm = new FormGroup({
+      firstName: new FormControl('', [Validators.required]),
+      lastName: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required]),
+      phoneNumber: new FormControl('', [Validators.required]),
+      dob: new FormControl('', [Validators.required]),
+      gender: new FormControl('', [Validators.required]),
+      departmentId: new FormControl('', [Validators.required]),
+      roleId: new FormControl('', [Validators.required])
+    });
+  }
 
   ngOnInit(): void {
     this.loadDepartments();
-    this.loadRoles(); 
-  } 
+    this.loadRoles();
+  }
 
   loadRoles(): void {
     this.roleService.getRoles().subscribe({
@@ -54,5 +71,21 @@ export class AddEmployeeComponent  implements OnInit {
         console.log('Departments fetching complete.');
       }
     });
+  }
+
+  onRegister() {
+    const employee: Employee ={
+      id: 0,
+      firstName: this.employeeForm.value['firstName'],
+      lastName: '',
+      email: '',
+      dob: this.employeeForm.value['dob'],
+      phoneNumber: '',
+      gender: '',
+      department: this.employeeForm.value['department'],
+      role: this.employeeForm.value['role']
+    } 
+    console.log(employee)
+    // this.emplyeeService.addEmployee()
   }
 }
